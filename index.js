@@ -16,7 +16,7 @@ connectDb();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "*",
+  origin: "https://voting-app-24.netlify.app/",
   methods:['POST','GET','PUT','DELETE'],
   credentials: true
 }));
