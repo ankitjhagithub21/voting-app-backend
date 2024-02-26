@@ -1,37 +1,37 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 
-const verifyToken = (req, res, next) => {
-    try {
-        // Check if the JWT token is present in the cookies
-        const token = req.cookies.jwt;
-        if (!token) {
+const verifyToken = (req,res,next) =>{
+    try{
+        const token = req.headers.cookie;
+       
+        if(!token){
             return res.status(401).json({
-                success: false,
-                message: "JWT token not found in the cookies."
-            });
+                success:false,
+                message:"Token Not found."
+            }) 
         }
-
-        // Verify the token
-        const userData = jwt.verify(token, process.env.JWT_SECRET);
-        if (!userData) {
-            return res.status(401).json({
-                success: false,
-                message: "JWT token is invalid or expired."
-            });
-        }
-
-        // Attach user data to the request object
-        req.user = userData;
+        const authToken = token.split('=')[1];
         
-        // Call next middleware
-        next();
+        const userData = jwt.verify(authToken,process.env.JWT_SECRET)
+        
+        if(!userData){
+            return res.status(401).json({
+                success:false,
+                message:"Unauthorized."
+            }) 
+        }
 
-    } catch (error) {
+        req.user = userData
+
+
+        next()
+
+    }catch(error){
         return res.status(500).json({
-            success: false,
-            message: error.message
-        });
+            success:false,
+            message:error.message
+        })
     }
-};
+}
 
-module.exports = verifyToken;
+module.exports = verifyToken
